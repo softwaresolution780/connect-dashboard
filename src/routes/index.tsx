@@ -1539,8 +1539,9 @@ function SectionRenderer({ id }: { id: SectionId }) {
       </Section>
     );
     case "usage": return (
-      <Section title="Usage Analytics" desc="Volume, response time and utilisation across departments and modules.">
+      <Section title="Analytics Center" desc="Communication, SLA, team, AI and trend metrics across departments and modules.">
         <AnalyticsAccessNotice />
+        <AnalyticsCenter />
         <StatGrid stats={[
           { label: "Active Conversations", value: "—" },
           { label: "Median First Response", value: "—" },
