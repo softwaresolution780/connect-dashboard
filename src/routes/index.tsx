@@ -18,6 +18,11 @@ import { useAnalyticsAccess } from "@/lib/analytics-access";
 import {
   AnimatedNumber, ProgressRing, ActivityTimeline, ModuleControlGrid,
 } from "@/components/manager/ControlPrimitives";
+import {
+  ManagementSection, SystemHealthCenter, IntegrationHub, AnalyticsCenter,
+  AuditExplorer, PermissionMatrixGrid, type ManagementSectionId,
+} from "@/components/manager/ManagementSections";
+
 
 function AnalyticsAccessNotice() {
   const { role, canView, canExport } = useAnalyticsAccess();
