@@ -623,7 +623,7 @@ function MegaNav({
                   className="absolute left-0 top-full z-40 mt-1 w-[min(94vw,760px)] animate-fade-in overflow-hidden rounded-2xl border border-[oklch(0.27_0.025_285)] bg-[oklch(0.205_0.028_285)] shadow-[0_30px_80px_-24px_rgba(0,0,0,0.62)]"
                 >
                   {/* Header */}
-                  <div className="flex items-center gap-2 border-b border-[oklch(0.185_0.02_285)] bg-gradient-to-br from-[oklch(0.185_0.02_285)] to-white px-4 py-3">
+                  <div className="flex items-center gap-2 border-b border-[oklch(0.185_0.02_285)] bg-gradient-to-br from-[oklch(0.185_0.02_285)] to-[oklch(0.2_0.03_285)] px-4 py-3">
                     <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-[oklch(0.185_0.02_285)] to-[oklch(0.185_0.02_285)] text-[oklch(0.68_0.161_265)] ring-1 ring-[oklch(0.38_0.06_265)]" aria-hidden="true">
                       <Icon className="h-4 w-4" />
                     </div>
@@ -816,7 +816,7 @@ function Breadcrumb({ group, label }: { group: string; label: string }) {
 function PageHeader({ item, group }: { item: (typeof ALL_ITEMS)[number]; group: string }) {
   const Icon = item.icon;
   return (
-    <div className="rounded-2xl border border-[oklch(0.27_0.025_285)] bg-gradient-to-br from-white to-[oklch(0.185_0.02_285)] p-5 shadow-[0_1px_2px_rgba(0,0,0,0.09)] md:p-6">
+    <div className="rounded-2xl border border-[oklch(0.27_0.025_285)] bg-gradient-to-br from-[oklch(0.245_0.035_290)] to-[oklch(0.185_0.02_285)] p-5 shadow-[0_1px_2px_rgba(0,0,0,0.09)] md:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
           <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[oklch(0.185_0.02_285)] to-[oklch(0.185_0.02_285)] text-[oklch(0.68_0.161_265)] ring-1 ring-[oklch(0.27_0.025_285)]">
@@ -1644,7 +1644,7 @@ function ToggleSwitch({ defaultOn, disabled }: { defaultOn: boolean; disabled?: 
 }
 function Callout({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-[oklch(0.27_0.025_285)] bg-gradient-to-br from-[oklch(0.185_0.02_285)] to-white p-4">
+    <div className="flex items-start gap-3 rounded-xl border border-[oklch(0.27_0.025_285)] bg-gradient-to-br from-[oklch(0.185_0.02_285)] to-[oklch(0.2_0.03_285)] p-4">
       <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[oklch(0.185_0.02_285)] text-[oklch(0.68_0.161_265)]">
         <Lock className="h-4 w-4" />
       </div>
