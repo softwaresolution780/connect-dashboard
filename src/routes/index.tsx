@@ -52,7 +52,9 @@ type SectionId =
   | "roles" | "approvals" | "escalation" | "categories" | "tags" | "labels" | "priority"
   | "automation" | "archive" | "broadcast" | "announcement" | "audit" | "activity"
   | "storage" | "usage" | "search-index" | "ai-training" | "integrations" | "backup"
-  | "system" | "permissions" | "analytics-access";
+  | "system" | "permissions" | "analytics-access"
+  | ManagementSectionId;
+
 
 type NavItem = { id: SectionId; label: string; icon: typeof Settings; hint?: string };
 type NavGroup = { label: string; icon: typeof Settings; items: NavItem[] };
