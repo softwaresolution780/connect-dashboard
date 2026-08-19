@@ -977,3 +977,43 @@ textarea:focus-visible,
   top: 8px;
   z-index: 5;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   CHAT MANAGER — DEPTH (3D) LAYER
+   ══════════════════════════════════════════════════════════════ */
+
+html.dark body {
+  background:
+    radial-gradient(1200px 620px at 12% -8%, oklch(0.34 0.11 292 / 0.42), transparent 62%),
+    radial-gradient(1000px 520px at 92% 0%, oklch(0.32 0.1 262 / 0.34), transparent 60%),
+    var(--background);
+  background-attachment: fixed;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.002em;
+}
+
+/* Give every panel/card real depth: raised top edge + cast shadow */
+@utility depth-1 {
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.07),
+    0 1px 2px oklch(0 0 0 / 0.35),
+    0 12px 28px -14px oklch(0 0 0 / 0.65);
+}
+@utility depth-2 {
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.09),
+    0 2px 6px oklch(0 0 0 / 0.4),
+    0 24px 48px -22px oklch(0 0 0 / 0.75);
+}
+
+html.dark .rounded-2xl,
+html.dark .rounded-xl {
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.05),
+    0 10px 24px -18px oklch(0 0 0 / 0.85);
+}
+
+html.dark button:active { transform: translateY(0.5px); }
