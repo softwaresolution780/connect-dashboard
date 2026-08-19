@@ -334,7 +334,7 @@ const ROLE_PERMISSIONS: Record<string, {
 };
 
 function PermissionBadge({ role, compact }: { role: string; compact?: boolean }) {
-  const perm = ROLE_PERMISSIONS[role] ?? ROLE_PERMISSIONS["Admin"];
+  const perm = (ROLE_PERMISSIONS[role] ?? ROLE_PERMISSIONS["Admin"])!;
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLSpanElement>(null);
   const tooltipId = useId();
@@ -527,8 +527,9 @@ function MegaNav({
     const labels = NAV.map((g) => g.label);
     const cur = open ? labels.indexOf(open) : 0;
     const next = (cur + dir + labels.length) % labels.length;
-    setOpen(labels[next]);
-    groupBtnRefs.current[labels[next]]?.focus();
+    const nextLabel = labels[next] ?? null;
+    setOpen(nextLabel);
+    if (nextLabel) groupBtnRefs.current[nextLabel]?.focus();
   };
 
   return (
@@ -1619,7 +1620,7 @@ function Toggles({ items }: { items: [string, boolean, boolean?][] }) {
               </span>
             )}
           </div>
-          <ToggleSwitch defaultOn={on} disabled={locked} />
+          <ToggleSwitch defaultOn={on} disabled={locked ?? false} />
         </div>
       ))}
     </div>
