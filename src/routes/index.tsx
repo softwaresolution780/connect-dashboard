@@ -29,14 +29,12 @@ function AnalyticsAccessNotice() {
         {canView ? "Can view CSAT dashboard" : "No access to CSAT dashboard"} ·{" "}
         {canExport ? "Can export reports" : "Export disabled"}
       </span>
-      <Link to="/analytics" className="ml-auto font-semibold text-primary hover:underline">
-        Open CSAT &amp; Analytics
-      </Link>
+      <span className="ml-auto font-semibold text-muted-foreground">CSAT &amp; Analytics</span>
     </div>
   );
 }
 
-export const Route = createFileRoute("/chat-manager")({
+export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Chat Manager — Software Vala" },
