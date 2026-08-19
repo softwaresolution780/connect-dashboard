@@ -18,6 +18,11 @@ import { useAnalyticsAccess } from "@/lib/analytics-access";
 import {
   AnimatedNumber, ProgressRing, ActivityTimeline, ModuleControlGrid,
 } from "@/components/manager/ControlPrimitives";
+import {
+  ManagementSection, SystemHealthCenter, IntegrationHub, AnalyticsCenter,
+  AuditExplorer, PermissionMatrixGrid, type ManagementSectionId,
+} from "@/components/manager/ManagementSections";
+
 
 function AnalyticsAccessNotice() {
   const { role, canView, canExport } = useAnalyticsAccess();
@@ -52,7 +57,9 @@ type SectionId =
   | "roles" | "approvals" | "escalation" | "categories" | "tags" | "labels" | "priority"
   | "automation" | "archive" | "broadcast" | "announcement" | "audit" | "activity"
   | "storage" | "usage" | "search-index" | "ai-training" | "integrations" | "backup"
-  | "system" | "permissions" | "analytics-access";
+  | "system" | "permissions" | "analytics-access"
+  | ManagementSectionId;
+
 
 type NavItem = { id: SectionId; label: string; icon: typeof Settings; hint?: string };
 type NavGroup = { label: string; icon: typeof Settings; items: NavItem[] };
@@ -65,6 +72,10 @@ const NAV: NavGroup[] = [
       { id: "conversations", label: "Conversation Management", icon: MessagesSquare, hint: "Freeze · transfer · rebind" },
       { id: "departments", label: "Department Mapping", icon: Building2, hint: "Routing & ownership" },
       { id: "modules", label: "Module Mapping", icon: Boxes, hint: "AMS · Projects · Sales" },
+      { id: "users", label: "Users", icon: Users, hint: "Directory & user status" },
+      { id: "teams", label: "Teams & Roles", icon: Users, hint: "Teams · departments · roles" },
+      { id: "channels", label: "Channel Registry", icon: Radio, hint: "Owners · members · status" },
+      { id: "channel-policies", label: "Channel Policies", icon: ShieldCheck, hint: "Lifecycle & access rules" },
     ],
   },
   {
@@ -77,6 +88,9 @@ const NAV: NavGroup[] = [
       { id: "roles", label: "Role Access Matrix", icon: KeyRound, hint: "Per-role capabilities" },
       { id: "permissions", label: "Permission Matrix", icon: FileLock2, hint: "Per-user overrides" },
       { id: "analytics-access", label: "Analytics Access", icon: BarChart3, hint: "Who can view & export CSAT" },
+      { id: "access-overview", label: "Access Overview", icon: Lock, hint: "Roles, elevation & reviews" },
+      { id: "config-versions", label: "Configuration Versioning", icon: GitCompare, hint: "Compare · publish · rollback" },
+      { id: "approval-center", label: "Approval Center", icon: CheckCircle2, hint: "Pending policy & config approvals" },
     ],
   },
   {
@@ -89,6 +103,11 @@ const NAV: NavGroup[] = [
       { id: "labels", label: "Labels", icon: TagIcon },
       { id: "priority", label: "Priority Rules", icon: Flag },
       { id: "automation", label: "Automation Rules", icon: Cog, hint: "Trigger → condition → action" },
+      { id: "queues", label: "Queues", icon: Layers, hint: "Load, wait time & agents" },
+      { id: "assignment-rules", label: "Assignment Rules", icon: Users, hint: "Who picks up what" },
+      { id: "routing-rules", label: "Routing Rules", icon: Zap, hint: "Source → destination · priority" },
+      { id: "sla", label: "SLA & Escalation", icon: Timer, hint: "Targets, attainment & ladder" },
+      { id: "automation-center", label: "Automation Center", icon: Cog, hint: "Workflows · schedules · runs" },
     ],
   },
   {
@@ -107,18 +126,24 @@ const NAV: NavGroup[] = [
       { id: "smart-reply", label: "Smart Reply Configuration", icon: Wand2 },
       { id: "ai-training", label: "AI Training Control", icon: Brain },
       { id: "search-index", label: "Search Index Management", icon: Search },
+      { id: "ai-providers", label: "AI Providers", icon: PlugZap, hint: "Gateways & residency" },
+      { id: "ai-models", label: "AI Models", icon: Brain, hint: "Active & default models" },
+      { id: "ai-usage", label: "AI Usage", icon: BarChart3, hint: "Requests, tokens & spend" },
+      { id: "ai-limits", label: "AI Limits & Policies", icon: ShieldCheck, hint: "Quotas & guardrails" },
+      { id: "ai-health", label: "AI Health", icon: Activity, hint: "Latency, errors & fallbacks" },
     ],
   },
   {
     label: "Operations", icon: Activity,
     items: [
-      { id: "audit", label: "Audit Center", icon: ShieldAlert },
+      { id: "audit", label: "Audit Explorer", icon: ShieldAlert, hint: "Search · actor · before/after" },
       { id: "activity", label: "Activity Logs", icon: Activity },
       { id: "storage", label: "Storage Overview", icon: HardDrive },
-      { id: "usage", label: "Usage Analytics", icon: BarChart3 },
-      { id: "integrations", label: "Integration Settings", icon: PlugZap },
+      { id: "usage", label: "Analytics Center", icon: BarChart3, hint: "Communication · SLA · team · AI" },
+      { id: "integrations", label: "Integration Hub", icon: PlugZap, hint: "APIs · webhooks · sync" },
       { id: "backup", label: "Backup Status", icon: Database },
-      { id: "system", label: "System Health", icon: Activity },
+      { id: "system", label: "System Health", icon: Activity, hint: "Realtime · API · DB · regions" },
+      { id: "incidents", label: "Incident Center", icon: AlertTriangle, hint: "Severity · status · timeline" },
     ],
   },
 ];
@@ -1414,8 +1439,9 @@ function SectionRenderer({ id }: { id: SectionId }) {
       </Section>
     );
     case "permissions": return (
-      <Section title="Permission Matrix" desc="Fine-grained per-user overrides on top of the Role Access Matrix.">
-        <Table headers={["User", "Role", "Overrides", "Effective Since"]} />
+      <Section title="Permission Matrix" desc="Effective permissions per Role × Module × Action — read, create, update, delete and approve.">
+        <PermissionMatrixGrid />
+        <Table headers={["User", "Role", "Overrides", "Effective Since"]} note="Per-user overrides sit on top of the matrix above." />
       </Section>
     );
     case "approvals": return (
@@ -1488,13 +1514,13 @@ function SectionRenderer({ id }: { id: SectionId }) {
       </Section>
     );
     case "audit": return (
-      <Section title="Audit Center" desc="Every admin action, policy change and message access is recorded in a tamper-evident audit ledger.">
+      <Section title="Advanced Audit Explorer" desc="Search the tamper-evident audit ledger by actor, action, module and severity — with full before/after values.">
+        <AuditExplorer />
         <Toggles items={[
           ["Real-time audit streaming to SIEM", true],
           ["Alert on unusual bulk access patterns", true],
           ["Alert on policy overrides", true],
         ]} />
-        <Table headers={["Time", "Actor", "Action", "Target", "Result"]} />
       </Section>
     );
     case "activity": return (
@@ -1513,8 +1539,9 @@ function SectionRenderer({ id }: { id: SectionId }) {
       </Section>
     );
     case "usage": return (
-      <Section title="Usage Analytics" desc="Volume, response time and utilisation across departments and modules.">
+      <Section title="Analytics Center" desc="Communication, SLA, team, AI and trend metrics across departments and modules.">
         <AnalyticsAccessNotice />
+        <AnalyticsCenter />
         <StatGrid stats={[
           { label: "Active Conversations", value: "—" },
           { label: "Median First Response", value: "—" },
@@ -1548,8 +1575,8 @@ function SectionRenderer({ id }: { id: SectionId }) {
       </Section>
     );
     case "integrations": return (
-      <Section title="Integration Settings" desc="External systems allowed to send events into the Communication Hub.">
-        <Table headers={["Integration", "Direction", "Auth", "Status"]} />
+      <Section title="Integration Hub" desc="APIs, webhooks and external systems connected to the Communication Hub — connection state, sync state and delivery logs.">
+        <IntegrationHub />
       </Section>
     );
     case "backup": return (
@@ -1563,17 +1590,38 @@ function SectionRenderer({ id }: { id: SectionId }) {
       </Section>
     );
     case "system": return (
-      <Section title="System Health" desc="Live status of the Communication Hub subsystems.">
-        <StatGrid stats={[
-          { label: "Message Gateway", value: "OK" },
-          { label: "Realtime Fabric", value: "OK" },
-          { label: "Audit Ledger", value: "OK" },
-          { label: "AI Gateway", value: "OK" },
-        ]} />
+      <Section title="System Health" desc="Realtime, API, database, queue, storage and regional health for the Communication Hub.">
+        <SystemHealthCenter />
+      </Section>
+    );
+    default: return (
+      <Section title={MANAGEMENT_META[id]?.title ?? "Management"} desc={MANAGEMENT_META[id]?.desc ?? ""}>
+        <ManagementSection id={id as ManagementSectionId} />
       </Section>
     );
   }
 }
+
+const MANAGEMENT_META: Partial<Record<SectionId, { title: string; desc: string }>> = {
+  users: { title: "Users", desc: "Workspace user directory — roles, departments, teams, status and last activity." },
+  teams: { title: "Teams & Roles", desc: "Teams, departments and role definitions that drive routing, ownership and access." },
+  channels: { title: "Channel Registry", desc: "Every registered channel with its owner, members, module binding and status." },
+  "channel-policies": { title: "Channel Policies", desc: "Access, retention, guest and lifecycle rules applied to channels." },
+  "access-overview": { title: "Access Overview", desc: "Who holds which role, what they can reach, and when access was last reviewed." },
+  "config-versions": { title: "Configuration Versioning", desc: "Version history with compare, preview, publish and rollback of the entire control plane." },
+  "approval-center": { title: "Approval Center", desc: "Pending policy, configuration, AI and workflow approvals awaiting a decision." },
+  queues: { title: "Queues", desc: "Queue depth, agents, wait time and SLA load across departments." },
+  "assignment-rules": { title: "Assignment Rules", desc: "How conversations are assigned to queues, teams and individual agents." },
+  "routing-rules": { title: "Routing Rules", desc: "Source-to-destination routing with conditions, fallbacks and the priority model." },
+  sla: { title: "SLA & Escalation", desc: "SLA targets, attainment and the escalation ladder that fires when they slip." },
+  "automation-center": { title: "Automation Center", desc: "Workflows, triggers, actions, schedules, failures and execution history." },
+  "ai-providers": { title: "AI Providers", desc: "Connected AI gateways, regions, auth and provider-level policies." },
+  "ai-models": { title: "AI Models", desc: "Available models, their use cases, cost and which one is default." },
+  "ai-usage": { title: "AI Usage", desc: "Requests, tokens, spend and latency across every AI capability." },
+  "ai-limits": { title: "AI Limits & Policies", desc: "Spend, rate and concurrency limits plus the guardrails applied to AI output." },
+  "ai-health": { title: "AI Health", desc: "Availability, latency, error rate and fallback behaviour per model." },
+  incidents: { title: "Incident Center", desc: "Critical incidents, severity, ownership, status and resolution timeline." },
+};
 
 /* ─────────── Primitives ─────────── */
 
